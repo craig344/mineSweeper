@@ -21,8 +21,9 @@ canvas.addEventListener('click', (e) => {
     x-= x%50;
     y-=y%50;
     
-    ctx.fillRect(x,y,49,49); 
-    console.log(x/50,y/50);
+    ctx.fillRect(x,y,49,49);
+    squares[x/50][y/50] = 1; 
+    console.log(squares[x/50][y/50]);
  });
 
  canvas.addEventListener('contextmenu', (e) => {
@@ -35,5 +36,6 @@ canvas.addEventListener('click', (e) => {
     y-=y%50;
     
     ctx.fillRect(x,y,49,49); 
-    console.log(x/50,y/50);
+    squares[x/50][y/50] = 0; 
+    console.log(squares[x/50][y/50]);
  });
