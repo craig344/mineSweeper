@@ -17,6 +17,7 @@ canvas.addEventListener('click', (e) => {
     y-=y%50;
     
     ctx.fillRect(x,y,49,49); 
+    console.log(x/50,y/50);
  });
 
  canvas.addEventListener('contextmenu', (e) => {
@@ -29,4 +30,5 @@ canvas.addEventListener('click', (e) => {
     y-=y%50;
     
     ctx.fillRect(x,y,49,49); 
+    console.log(x/50,y/50);
  });
