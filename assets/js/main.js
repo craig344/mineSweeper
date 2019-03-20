@@ -23,7 +23,7 @@ canvas.addEventListener('click', (e) => {
     if (squares[x / 50][y / 50] == 0) {
         ctx.fillRect(x, y, 49, 49);
         squares[x / 50][y / 50] = 1;
-        console.log(squares[x / 50][y / 50]);
+        console.log(squares[x / 50][y / 50],x/50,y/50);
     }
 });
 
@@ -39,6 +39,6 @@ canvas.addEventListener('contextmenu', (e) => {
     if (squares[x / 50][y / 50] == 1) {
         ctx.fillRect(x, y, 49, 49);
         squares[x / 50][y / 50] = 0;
-        console.log(squares[x / 50][y / 50]);
+        console.log(squares[x / 50][y / 50],x/50,y/50);
     }
 });
