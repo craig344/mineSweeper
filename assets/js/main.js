@@ -13,11 +13,7 @@ function Click(ctx, colour, x, y, squares, click) {
     return squares;
 }
 
-function init() {
-    var canvas = document.getElementById("mainCanvas");
-    var ctx = canvas.getContext("2d");
-    var squares = [];
-
+function fillCanvas(ctx, squares) {
     ctx.fillStyle = "#808080";
     for (i = 0; i < 10; i++) {
         squares[i] = [];
@@ -29,6 +25,16 @@ function init() {
             squares[i / 50][j / 50] = 0;
         }
     }
+    return squares;
+}
+
+function init() {
+    var canvas = document.getElementById("mainCanvas");
+    var ctx = canvas.getContext("2d");
+    var squares = [];
+
+    squares = fillCanvas(ctx, squares);
+
     canvas.addEventListener('click', (e) => {
         squares = Click(ctx, "rgba(200,0,0,1)", e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, squares, 1);
     });
