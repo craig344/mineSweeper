@@ -11,7 +11,7 @@ function click(ctx, x, y, grid, click) {
     var nx = x / 50,
         ny = y / 50;
 
-    if (click == "right" && grid[nx][ny].red == "no" && grid[nx][ny].bomb == "yes") {
+    if (click == "right" && grid[nx][ny].red == "no") {
         grid = fillColour(grid, ctx, x, y, "rgba(200,0,0,1)");
         grid[nx][ny].red = "yes";
     } else if (click == "left" && grid[nx][ny].red == "yes") {
