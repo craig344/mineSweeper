@@ -1,4 +1,4 @@
-function Click(ctx, colour, x, y, squares, click) {
+function click(ctx, colour, x, y, squares, click) {
     x -= x % 50;
     y -= y % 50;
     var nx = x / 50,
@@ -28,6 +28,21 @@ function fillCanvas(ctx, squares) {
     return squares;
 }
 
+function placeBombs(squares){
+    var bx, by;
+    for(i = 0; j<10; i++){
+        bx = Math.floor((Math.random() * 10));
+        by = Math.floor((Math.random() * 10));
+        if(squares[bx][by] == 2){
+            i--;
+        }else{
+            squares[bx][by] = 2;
+        }
+    }
+    return squares;
+
+}
+
 function init() {
     var canvas = document.getElementById("mainCanvas");
     var ctx = canvas.getContext("2d");
@@ -36,12 +51,12 @@ function init() {
     squares = fillCanvas(ctx, squares);
 
     canvas.addEventListener('click', (e) => {
-        squares = Click(ctx, "rgba(200,0,0,1)", e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, squares, 1);
+        squares = click(ctx, "rgba(200,0,0,1)", e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, squares, 1);
     });
 
     canvas.addEventListener('contextmenu', (e) => {
         e.preventDefault();
-        squares = Click(ctx, "#808080", e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, squares, 0);
+        squares = click(ctx, "#808080", e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, squares, 0);
     });
 
 }
