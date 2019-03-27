@@ -18,7 +18,6 @@ function click(ctx, x, y, grid, click) {
         grid = fillColour(grid, ctx, x, y, "#808080");
         grid[nx][ny].red = "no";
     }
-
     return grid;
 }
 
