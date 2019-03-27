@@ -86,5 +86,4 @@ function init() {
         e.preventDefault();
         grid = click(ctx, e.clientX - canvas.offsetLeft, e.clientY - canvas.offsetTop, grid, "right");
     });
-
 }
