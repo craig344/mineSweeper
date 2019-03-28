@@ -113,14 +113,19 @@ function countAdjacentBombs(nx,ny,grid){
     for(i=nx-1;i<=nx+1;i++){
         for(j=ny-1;j<=ny+1;j++){
             if(i>=0 && j>=0 && i<10 && j<10){
-                if(grid[i][j].bomb!="no" && (i!=nx && j!=ny)){
-                    count++;
+                if(grid[i][j].bomb!="no"){
+                    if(i!=nx || j!=ny){
+                        count++;
+                    }
                 }
             }
             
         }
     }
-    return count;
+    if(count!=0){
+        return count;
+    }
+    return "";
 }
 
 function init() {
