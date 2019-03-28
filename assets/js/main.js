@@ -20,10 +20,14 @@ function click(ctx, x, y, grid, click) {
             grid[nx][ny].flag = "no";
         }
     } else if (click == "left") {
-        if(grid[nx][ny].flag == "no"){
+        if(grid[nx][ny].flag == "no" && grid[nx][ny].opened == "no"){
             fillColour(ctx, x, y, "#808080");
             grid[nx][ny].opened = "yes";
-            writeNumber(countAdjacentBombs(nx,ny,grid),x,y,ctx);
+            if(grid[nx][ny].bomb == "yes"){
+                drawBomb(x,y,ctx);
+            }else{
+                writeNumber(countAdjacentBombs(nx,ny,grid),x,y,ctx);
+            }
         }   
     }
     
@@ -92,7 +96,10 @@ function drawFlag(x,y,ctx){
 }
 
 function drawBomb(x,y,ctx){
-    
+    ctx.fillStyle = "rgba(200,0,0,1)";
+    ctx.arc(x+24, y+24, 20, 0, 2 * Math.PI);
+    ctx.closePath();
+    ctx.fill();
 }
 
 function writeNumber(n,x,y,ctx){
