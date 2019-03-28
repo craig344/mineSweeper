@@ -91,6 +91,10 @@ function drawFlag(x,y,ctx){
     ctx.fill();
 }
 
+function drawBomb(x,y,ctx){
+    
+}
+
 function writeNumber(n,x,y,ctx){
     ctx.fillStyle = "rgba(0,0,0,1)"
     ctx.font = "30px Arial";
