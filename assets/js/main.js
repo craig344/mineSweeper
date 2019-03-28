@@ -23,7 +23,7 @@ function click(ctx, x, y, grid, click) {
         if(grid[nx][ny].flag == "no"){
             fillColour(ctx, x, y, "#808080");
             grid[nx][ny].opened = "yes";
-            writeNumber(x,y,ctx);
+            writeNumber(countAdjacentBombs(nx,ny,grid),x,y,ctx);
         }   
     }
     
@@ -91,10 +91,25 @@ function drawFlag(x,y,ctx){
     ctx.fill();
 }
 
-function writeNumber(x,y,ctx){
+function writeNumber(n,x,y,ctx){
     ctx.fillStyle = "rgba(0,0,0,1)"
     ctx.font = "30px Arial";
-    ctx.fillText(2, x+15, y+34);
+    ctx.fillText(n, x+15, y+34);
+}
+
+function countAdjacentBombs(nx,ny,grid){
+    var count=0;
+    for(i=nx-1;i<=nx+1;i++){
+        for(j=ny-1;j<=ny+1;j++){
+            if(i>=0 && j>=0 && i<10 && j<10){
+                if(grid[i][j].bomb!="no" && (i!=nx && j!=ny)){
+                    count++;
+                }
+            }
+            
+        }
+    }
+    return count;
 }
 
 function init() {
