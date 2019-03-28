@@ -23,6 +23,7 @@ function click(ctx, x, y, grid, click) {
         if(grid[nx][ny].flag == "no"){
             fillColour(ctx, x, y, "#808080");
             grid[nx][ny].opened = "yes";
+            writeNumber(x,y,ctx);
         }   
     }
     
@@ -88,6 +89,12 @@ function drawFlag(x,y,ctx){
     ctx.stroke();
     ctx.fillStyle = "rgba(200,0,0,1)";
     ctx.fill();
+}
+
+function writeNumber(x,y,ctx){
+    ctx.fillStyle = "rgba(0,0,0,1)"
+    ctx.font = "30px Arial";
+    ctx.fillText(2, x+15, y+34);
 }
 
 function init() {
