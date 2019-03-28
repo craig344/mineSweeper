@@ -15,6 +15,7 @@ function click(ctx, x, y, grid, click) {
         if(grid[nx][ny].flag == "no" && grid[nx][ny].opened == "no"){
             drawFlag(x,y,ctx);
             grid[nx][ny].flag = "yes";
+            grid[nx][ny].opened = "yes";
         }else if(grid[nx][ny].flag == "yes"){
             fillColour(ctx, x, y, "#505050");
             grid[nx][ny].flag = "no";
@@ -25,6 +26,8 @@ function click(ctx, x, y, grid, click) {
             grid[nx][ny].opened = "yes";
             if(grid[nx][ny].bomb == "yes"){
                 drawBomb(x,y,ctx);
+                showAll(ctx,grid);
+                alert("You loose!");
             }else{
                 writeNumber(countAdjacentBombs(nx,ny,grid),x,y,ctx);
             }
@@ -126,6 +129,20 @@ function countAdjacentBombs(nx,ny,grid){
         return count;
     }
     return "";
+}
+
+function showAll(ctx,grid){
+    for(i=0;i<10;i++){
+        for(j=0;j<10;j++){
+            if(grid[i][j].opened=="no"){
+                grid[i][j].opened = "yes";
+                if(grid[i][j].bomb == "yes"){
+                    fillColour(ctx, i*50, j*50, "#808080");
+                    drawBomb(i*50,j*50,ctx);
+                }
+            }
+        }
+    }
 }
 
 function init() {
