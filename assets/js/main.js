@@ -1,8 +1,7 @@
 function box() {
     this.flag = "no";
-    this.click = "no";
+    this.opened = "no";
     this.bomb = "no";
-    this.red = "no";
 }
 
 function click(ctx, x, y, grid, click) {
@@ -11,25 +10,32 @@ function click(ctx, x, y, grid, click) {
     var nx = x / 50,
         ny = y / 50;
 
-    if (click == "right" && grid[nx][ny].red == "no") {
-        grid = fillColour(grid, ctx, x, y, "rgba(200,0,0,1)");
-        grid[nx][ny].red = "yes";
-    } else if (click == "left" && grid[nx][ny].red == "yes") {
-        grid = fillColour(grid, ctx, x, y, "#808080");
-        grid[nx][ny].red = "no";
+    if (click == "right") {
+        //fillColour(ctx, x, y, "rgba(200,0,0,1)");
+        if(grid[nx][ny].flag == "no" && grid[nx][ny].opened == "no"){
+            drawFlag(x,y,ctx);
+            grid[nx][ny].flag = "yes";
+        }else if(grid[nx][ny].flag == "yes"){
+            fillColour(ctx, x, y, "#505050");
+            grid[nx][ny].flag = "no";
+        }
+    } else if (click == "left") {
+        if(grid[nx][ny].flag == "no"){
+            fillColour(ctx, x, y, "#808080");
+            grid[nx][ny].opened = "yes";
+        }   
     }
     
     return grid;
 }
 
-function fillColour(grid, ctx, x, y, colour) {
+function fillColour(ctx, x, y, colour) {
     ctx.fillStyle = colour;
     ctx.fillRect(x, y, 49, 49);
-    return grid;
 }
 
 function fillCanvas(ctx, size) {
-    ctx.fillStyle = "#808080";
+    ctx.fillStyle = "#505050";
 
     for (i = 0; i < 50 * size; i += 50) {
         for (j = 0; j < 50 * size; j += 50) {
@@ -66,6 +72,22 @@ function addBoxes(grid, size) {
         }
     }
     return grid;
+}
+
+function drawFlag(x,y,ctx){
+    ctx.beginPath();
+    ctx.moveTo(x+18, y+46);
+    ctx.lineTo(x+24, y+46);
+    ctx.moveTo(x+21, y+46);
+    ctx.lineTo(x+21, y+3);
+    ctx.lineTo(x+42, y+12);
+    ctx.lineTo(x+21, y+24);
+    ctx.closePath();
+    ctx.lineWidth = 2;
+    ctx.strokeStyle = "rgba(0,0,0,1)";
+    ctx.stroke();
+    ctx.fillStyle = "rgba(200,0,0,1)";
+    ctx.fill();
 }
 
 function init() {
