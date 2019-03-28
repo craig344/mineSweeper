@@ -19,6 +19,7 @@ function click(ctx, x, y, grid, click) {
         }else if(grid[nx][ny].flag == "yes"){
             fillColour(ctx, x, y, "#505050");
             grid[nx][ny].flag = "no";
+            grid[nx][ny].opened = "no";
         }
     } else if (click == "left") {
         if(grid[nx][ny].flag == "no" && grid[nx][ny].opened == "no"){
@@ -26,8 +27,8 @@ function click(ctx, x, y, grid, click) {
             grid[nx][ny].opened = "yes";
             if(grid[nx][ny].bomb == "yes"){
                 drawBomb(x,y,ctx);
-                showAll(ctx,grid);
-                alert("You loose!");
+                var score = endGame(ctx,grid);
+                alert("You loose! Your score is: "+score);
             }else{
                 writeNumber(countAdjacentBombs(nx,ny,grid),x,y,ctx);
             }
@@ -131,7 +132,8 @@ function countAdjacentBombs(nx,ny,grid){
     return "";
 }
 
-function showAll(ctx,grid){
+function endGame(ctx,grid){
+    var score = 0;
     for(i=0;i<10;i++){
         for(j=0;j<10;j++){
             if(grid[i][j].opened=="no"){
@@ -140,9 +142,12 @@ function showAll(ctx,grid){
                     fillColour(ctx, i*50, j*50, "#808080");
                     drawBomb(i*50,j*50,ctx);
                 }
+            }else if(grid[i][j].flag == "yes" && grid[i][j].bomb == "yes"){
+                score++;
             }
         }
     }
+    return score;
 }
 
 function init() {
