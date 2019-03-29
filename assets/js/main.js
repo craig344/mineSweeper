@@ -30,7 +30,8 @@ function click(ctx, x, y, grid, click) {
                 var score = endGame(ctx, grid);
                 alert("You loose! Your score is: " + score);
             } else {
-                writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
+                //writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
+                grid = flood(nx,ny,ctx,grid);
             }
         }
     }
@@ -151,18 +152,27 @@ function endGame(ctx, grid) {
 }
 
 function flood(nx, ny, ctx, grid) {
+    var m = 0;
+    var n = 0;
+    fillColour(ctx, nx*50, ny*50, "#808080");
+    grid[nx][ny].opened = "yes";
     if (countAdjacentBombs(nx, ny, grid) == "") {
-        for (i = nx - 1; i <= nx + 1; i++) {
-            for (j = ny - 1; j <= ny + 1; j++) {
-                if (i >= 0 && j >= 0 && i < 10 && j < 10) {
-                    if (i != nx || j != ny) {
-                        flood(i,j,ctx,grid);
+        for (m = nx - 1; m <= nx + 1; m++) {
+            for (n = ny - 1; n <= ny + 1; n++) {
+                if (m >= 0 && n >= 0 && m < 10 && n < 10) {
+                    if (m != nx || n != ny) {
+                        if(grid[m][n].opened == "no"){
+                            grid = flood(m,n,ctx,grid);
+                        }
                     }
                 }
 
             }
         }
+    }else{
+        writeNumber(countAdjacentBombs(nx, ny, grid), nx*50, ny*50, ctx);
     }
+    return grid;
 }
 
 function init() {
