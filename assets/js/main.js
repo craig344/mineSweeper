@@ -4,6 +4,19 @@ function box() {
     this.bomb = "no";
 }
 
+function state(){
+    this.x = 0;
+    this.y = 0;
+    this.nx = this.x/50;
+    this.ny = this.y/50;
+    this.bombsPlaced = "no";
+    this.ctx = null;
+    this.grid = null;
+    this.score = 0;
+    this.size = 0;
+    this.flags = this.size;
+}
+
 function click(ctx, x, y, grid, click) {
     x -= x % 50;
     y -= y % 50;
