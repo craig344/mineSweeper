@@ -17,7 +17,8 @@ function State() {
     this.flags = 0;
     this.click = null;
     this.end = false;
-    this.time = 1000;
+    this.interval = null;
+    this.started = false;
 }
 
 function click(curState) {
@@ -26,6 +27,9 @@ function click(curState) {
     curState.nx = curState.x / 50;
     curState.ny = curState.y / 50;
     if (curState.nx < curState.size && curState.ny < curState.size) {
+        if(!curState.started){
+            curState = startGame(curState);
+        }
         if (curState.click == "right" && !curState.end) {
             //fillColour(ctx, x, y, "rgba(200,0,0,1)");
             if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
@@ -49,8 +53,7 @@ function click(curState) {
                 curState.grid[curState.nx][curState.ny].opened = "yes";
                 if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                     drawBomb(curState);
-                    curState.score = endGame(curState);
-                    alert("You loose! Your score is: " + curState.score);
+                    endGame(curState);
                 } else {
                     //writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
                     curState.grid = flood(curState);
@@ -82,7 +85,7 @@ function placeBombs(curState) {
     for (i = 0; i < curState.size; i++) {
         bx = Math.floor((Math.random() * 10));
         by = Math.floor((Math.random() * 10));
-        if (curState.grid[bx][by].bomb == "yes") {
+        if (curState.grid[bx][by].bomb == "yes" || (bx == curState.nx && by == curState.ny)) {
             i--;
         } else {
             curState.grid[bx][by].bomb = "yes";
@@ -176,8 +179,9 @@ function endGame(curState) {
             }
         }
     }
-
-    return curState;
+    curState.end = true;
+    clearInterval(curState.interval);
+    drawScore(curState);
 }
 
 function drawCross(curState) {
@@ -248,6 +252,7 @@ function drawScore(curState) {
     curState.ctx.fillText(" : " + curState.score, 233, 565);
 }
 
+var time = 0;
 function drawTimer(curState) {
     curState.ctx.fillStyle = "#808080";
     curState.ctx.fillRect(333, 500, 166, 99);
@@ -258,8 +263,24 @@ function drawTimer(curState) {
     img.src = "./assets/images/stopwatch.svg"
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
     curState.ctx.font = "40px Calibri";
-    curState.ctx.fillText(":" + curState.time, 393, 565);
-    curState.time++;
+    curState.ctx.fillText(":" + time, 393, 565);
+    time++;
+    return curState;
+}
+
+function updateTime(curState){
+    curState.ctx.fillStyle = "#808080";
+    curState.ctx.fillRect(393, 500, 106, 99);
+    curState.ctx.fillStyle = "rgba(0,0,0,1)"
+    curState.ctx.font = "40px Calibri";
+    curState.ctx.fillText(":" + time, 393, 565);
+    time++;
+}
+
+function startGame(curState){
+    curState.started = true;
+    curState.interval = setInterval(updateTime,1000,curState);
+    curState = placeBombs(curState);
     return curState;
 }
 
@@ -278,7 +299,6 @@ function init() {
     drawFlagCount(curState);
     drawScore(curState);
     drawTimer(curState);
-    curState = placeBombs(curState);
 
     canvas.addEventListener('click', (e) => {
         curState.click = "left";
