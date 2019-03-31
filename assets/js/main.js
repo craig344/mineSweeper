@@ -14,9 +14,10 @@ function State() {
     this.grid = null;
     this.score = 0;
     this.size = 0;
-    this.flags = this.size;
+    this.flags = 0;
     this.click = null;
     this.end = false;
+    this.time = 1000;
 }
 
 function click(curState) {
@@ -28,13 +29,19 @@ function click(curState) {
         if (curState.click == "right" && !curState.end) {
             //fillColour(ctx, x, y, "rgba(200,0,0,1)");
             if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
-                drawFlag(curState);
-                curState.grid[curState.nx][curState.ny].flag = "yes";
-                curState.grid[curState.nx][curState.ny].opened = "yes";
+                if (curState.flags > 0) {
+                    drawFlag(curState);
+                    curState.grid[curState.nx][curState.ny].flag = "yes";
+                    curState.grid[curState.nx][curState.ny].opened = "yes";
+                    curState.flags--;
+                    drawFlagCount(curState);
+                }
             } else if (curState.grid[curState.nx][curState.ny].flag == "yes") {
                 fillColour(curState, "#505050");
                 curState.grid[curState.nx][curState.ny].flag = "no";
                 curState.grid[curState.nx][curState.ny].opened = "no";
+                curState.flags++;
+                drawFlagCount(curState);
             }
         } else if (curState.click == "left" && !curState.end) {
             if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
@@ -125,8 +132,8 @@ function drawBomb(curState) {
 
 function writeNumber(n, curState) {
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
-    curState.ctx.font = "30px Arial";
-    curState.ctx.fillText(n, curState.x + 15, curState.y + 34);
+    curState.ctx.font = "30px Calibri";
+    curState.ctx.fillText(n, curState.x + 17, curState.y + 34);
 }
 
 function countAdjacentBombs(curState) {
@@ -217,17 +224,60 @@ function flood(curState) {
     return curState.grid;
 }
 
+function drawFlagCount(curState) {
+    curState.ctx.fillStyle = "#808080";
+    curState.ctx.fillRect(0, 500, 165, 99);
+    curState.x = 0;
+    curState.y = 525;
+    drawFlag(curState);
+    curState.ctx.fillStyle = "rgba(0,0,0,1)"
+    curState.ctx.font = "50px Calibri";
+    curState.ctx.fillText(": " + curState.flags, curState.x + 60, curState.y + 40);
+}
+
+function drawScore(curState) {
+    curState.ctx.fillStyle = "#808080";
+    curState.ctx.fillRect(166, 500, 166, 99);
+    var img = new Image();
+    img.onload = function(){
+        curState.ctx.drawImage(img, 185,525,49,49);
+    }
+    img.src = "./assets/images/award.svg"
+    curState.ctx.fillStyle = "rgba(0,0,0,1)"
+    curState.ctx.font = "50px Calibri";
+    curState.ctx.fillText(" : " + curState.score, 233, 565);
+}
+
+function drawTimer(curState) {
+    curState.ctx.fillStyle = "#808080";
+    curState.ctx.fillRect(333, 500, 166, 99);
+    var img = new Image();
+    img.onload = function(){
+        curState.ctx.drawImage(img, 345,525,49,49);
+    }
+    img.src = "./assets/images/stopwatch.svg"
+    curState.ctx.fillStyle = "rgba(0,0,0,1)"
+    curState.ctx.font = "40px Calibri";
+    curState.ctx.fillText(":" + curState.time, 393, 565);
+    curState.time++;
+    return curState;
+}
+
 function init() {
     var curState = new State();
     var canvas = document.getElementById("mainCanvas");
     curState.ctx = canvas.getContext("2d");
     curState.grid = [];
     curState.size = 10;
+    curState.flags = 10;
 
 
     curState = make2d(curState);
     fillCanvas(curState);
     curState = addBoxes(curState);
+    drawFlagCount(curState);
+    drawScore(curState);
+    drawTimer(curState);
     curState = placeBombs(curState);
 
     canvas.addEventListener('click', (e) => {
