@@ -154,8 +154,8 @@ function endGame(curState) {
             if (curState.grid[i][j].opened == "no") {
                 curState.grid[i][j].opened = "yes";
                 if (curState.grid[i][j].bomb == "yes") {
-                    curState.nx = i*50;
-                    curState.ny = j*50;
+                    curState.x = i*50;
+                    curState.y = j*50;
                     fillColour(curState, "#808080");
                     drawBomb(curState);
                 }
@@ -166,7 +166,6 @@ function endGame(curState) {
     }
     return score;
 }
-nx, ny, ctx, grid;
 function flood(curState) {
     var m = 0;
     var n = 0;
