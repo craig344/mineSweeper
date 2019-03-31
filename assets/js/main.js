@@ -4,7 +4,7 @@ function Box() {
     this.bomb = "no";
 }
 
-function State(){
+function State() {
     this.x = 0;
     this.y = 0;
     this.nx = 0;
@@ -16,15 +16,16 @@ function State(){
     this.size = 0;
     this.flags = this.size;
     this.click = null;
+    this.end = false;
 }
 
 function click(curState) {
     curState.x -= curState.x % 50;
     curState.y -= curState.y % 50;
-    curState.nx = curState.x/50;
-    curState.ny = curState.y/50;
+    curState.nx = curState.x / 50;
+    curState.ny = curState.y / 50;
 
-    if (curState.click == "right") {
+    if (curState.click == "right" && !curState.end) {
         //fillColour(ctx, x, y, "rgba(200,0,0,1)");
         if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
             drawFlag(curState);
@@ -35,7 +36,7 @@ function click(curState) {
             curState.grid[curState.nx][curState.ny].flag = "no";
             curState.grid[curState.nx][curState.ny].opened = "no";
         }
-    } else if (curState.click == "left") {
+    } else if (curState.click == "left" && !curState.end) {
         if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
             fillColour(curState, "#808080");
             curState.grid[curState.nx][curState.ny].opened = "yes";
@@ -121,7 +122,7 @@ function drawBomb(curState) {
     curState.ctx.fill();
 }
 
-function writeNumber(n,curState) {
+function writeNumber(n, curState) {
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
     curState.ctx.font = "30px Arial";
     curState.ctx.fillText(n, curState.x + 15, curState.y + 34);
@@ -148,24 +149,41 @@ function countAdjacentBombs(curState) {
 }
 
 function endGame(curState) {
-    var score = 0;
     for (i = 0; i < curState.size; i++) {
         for (j = 0; j < curState.size; j++) {
             if (curState.grid[i][j].opened == "no") {
                 curState.grid[i][j].opened = "yes";
                 if (curState.grid[i][j].bomb == "yes") {
-                    curState.x = i*50;
-                    curState.y = j*50;
+                    curState.x = i * 50;
+                    curState.y = j * 50;
                     fillColour(curState, "#808080");
                     drawBomb(curState);
                 }
             } else if (curState.grid[i][j].flag == "yes" && curState.grid[i][j].bomb == "yes") {
-                score++;
+                curState.x = i*50;
+                curState.y = j*50;
+                fillColour(curState, "#808080");
+                drawCross(curState);
+                curState.score++;
             }
         }
     }
-    return score;
+    
+    return curState;
 }
+
+function drawCross(curState){
+    curState.ctx.beginPath();
+    curState.ctx.moveTo(curState.x + 1, curState.y + 1);
+    curState.ctx.lineTo(curState.x + 48, curState.y + 48);
+    curState.ctx.moveTo(curState.x + 48, curState.y + 1);
+    curState.ctx.lineTo(curState.x +1, curState.y + 48);
+    curState.ctx.closePath();
+    curState.ctx.lineWidth = 2;
+    curState.ctx.strokeStyle = "rgba(200,0,0,1)";
+    curState.ctx.stroke();
+}
+
 function flood(curState) {
     var m = 0;
     var n = 0;
@@ -174,17 +192,17 @@ function flood(curState) {
     fillColour(curState, "#808080");
     curState.grid[curState.nx][curState.ny].opened = "yes";
     if (countAdjacentBombs(curState) == null) {
-        for (m =curState.nx - 1; m <= curState.nx + 1; m++) {
+        for (m = curState.nx - 1; m <= curState.nx + 1; m++) {
             for (n = curState.ny - 1; n <= curState.ny + 1; n++) {
                 if (m >= 0 && n >= 0 && m < 10 && n < 10) {
                     if (m != curState.nx || n != curState.ny) {
-                        if(curState.grid[m][n].opened == "no"){
+                        if (curState.grid[m][n].opened == "no") {
                             temp.nx = m;
                             temp.ny = n;
                             temp.ctx = curState.ctx;
                             temp.grid = curState.grid;
-                            temp.x = m*50;
-                            temp.y = n*50;
+                            temp.x = m * 50;
+                            temp.y = n * 50;
                             curState.grid = flood(temp);
                         }
                     }
@@ -192,7 +210,7 @@ function flood(curState) {
 
             }
         }
-    }else{
+    } else {
         writeNumber(countAdjacentBombs(curState), curState);
     }
     return curState.grid;
@@ -204,7 +222,7 @@ function init() {
     curState.ctx = canvas.getContext("2d");
     curState.grid = [];
     curState.size = 10;
-    
+
 
     curState = make2d(curState);
     fillCanvas(curState);
