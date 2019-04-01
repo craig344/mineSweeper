@@ -36,19 +36,24 @@ function click(curState) {
                 if (curState.flags > 0) {
                     drawFlag(curState);
                     curState.grid[curState.nx][curState.ny].flag = "yes";
-                    curState.grid[curState.nx][curState.ny].opened = "yes";
                     curState.flags--;
                     drawFlagCount(curState);
+                    if(curState.grid[curState.nx][curState.ny].bomb = "yes"){
+                        curState.score++;
+                        if(curState.score == curState.size){}
+                    }
                 }
             } else if (curState.grid[curState.nx][curState.ny].flag == "yes") {
                 fillColour(curState, "#505050");
                 curState.grid[curState.nx][curState.ny].flag = "no";
-                curState.grid[curState.nx][curState.ny].opened = "no";
                 curState.flags++;
                 drawFlagCount(curState);
+                if(curState.grid[curState.nx][curState.ny].bomb = "yes"){
+                    curState.score--;
+                }
             }
         } else if (curState.click == "left" && !curState.end) {
-            if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
+            if (curState.grid[curState.nx][curState.ny].flag == "no" || curState.grid[curState.nx][curState.ny].opened == "no") {
                 fillColour(curState, "#808080");
                 curState.grid[curState.nx][curState.ny].opened = "yes";
                 if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
@@ -170,12 +175,12 @@ function endGame(curState) {
                     fillColour(curState, "#808080");
                     drawBomb(curState);
                 }
-            } else if (curState.grid[i][j].flag == "yes" && curState.grid[i][j].bomb == "yes") {
+            }
+            if (curState.grid[i][j].flag == "yes" && curState.grid[i][j].bomb == "yes") {
                 curState.x = i * 50;
                 curState.y = j * 50;
                 fillColour(curState, "#808080");
                 drawCross(curState);
-                curState.score++;
             }
         }
     }
@@ -208,7 +213,7 @@ function flood(curState) {
             for (n = curState.ny - 1; n <= curState.ny + 1; n++) {
                 if (m >= 0 && n >= 0 && m < 10 && n < 10) {
                     if (m != curState.nx || n != curState.ny) {
-                        if (curState.grid[m][n].opened == "no") {
+                        if (curState.grid[m][n].opened == "no" && curState.grid[m][n].flag == "no") {
                             temp.nx = m;
                             temp.ny = n;
                             temp.ctx = curState.ctx;
