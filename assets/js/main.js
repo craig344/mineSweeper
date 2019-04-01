@@ -38,7 +38,7 @@ function click(curState) {
                     curState.grid[curState.nx][curState.ny].flag = "yes";
                     curState.flags--;
                     drawFlagCount(curState);
-                    if(curState.grid[curState.nx][curState.ny].bomb = "yes"){
+                    if(curState.grid[curState.nx][curState.ny].bomb == "yes"){
                         curState.score++;
                         if(curState.score == curState.size){
                             winGame(curState);
@@ -50,7 +50,7 @@ function click(curState) {
                 curState.grid[curState.nx][curState.ny].flag = "no";
                 curState.flags++;
                 drawFlagCount(curState);
-                if(curState.grid[curState.nx][curState.ny].bomb = "yes"){
+                if(curState.grid[curState.nx][curState.ny].bomb == "yes"){
                     curState.score--;
                 }
             }
@@ -60,7 +60,7 @@ function click(curState) {
                 curState.grid[curState.nx][curState.ny].opened = "yes";
                 if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                     drawBomb(curState);
-                    endGame(curState);
+                    looseGame(curState);
                 } else {
                     //writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
                     curState.grid = flood(curState);
@@ -151,13 +151,12 @@ function countAdjacentBombs(curState) {
     for (i = curState.nx - 1; i <= curState.nx + 1; i++) {
         for (j = curState.ny - 1; j <= curState.ny + 1; j++) {
             if (i >= 0 && j >= 0 && i < 10 && j < 10) {
-                if (curState.grid[i][j].bomb != "no") {
+                if (curState.grid[i][j].bomb == "yes") {
                     if (i != curState.nx || j != curState.ny) {
                         count++;
                     }
                 }
             }
-
         }
     }
     if (count != 0) {
@@ -291,7 +290,21 @@ function startGame(curState){
 }
 
 function winGame(curState){
-    
+    endGame(curState);
+    drawBox(curState,"You Win!!!!", "rgba(0,200,0,0.8)");
+}
+
+function looseGame(curState){
+    endGame(curState);
+    drawBox(curState,"You Loose!!", "rgba(200,0,0,0.8)");
+}
+
+function drawBox(curState, text, colour){
+    curState.ctx.fillStyle = colour;
+    curState.ctx.fillRect(100,200, 299, 99);
+    curState.ctx.fillStyle = "rgba(255,255,255,1)"
+    curState.ctx.font = "50px Calibri";
+    curState.ctx.fillText(text, 130, 260);
 }
 
 function init() {
