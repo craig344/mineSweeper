@@ -40,7 +40,9 @@ function click(curState) {
                     drawFlagCount(curState);
                     if(curState.grid[curState.nx][curState.ny].bomb = "yes"){
                         curState.score++;
-                        if(curState.score == curState.size){}
+                        if(curState.score == curState.size){
+                            winGame(curState);
+                        }
                     }
                 }
             } else if (curState.grid[curState.nx][curState.ny].flag == "yes") {
@@ -168,7 +170,6 @@ function endGame(curState) {
     for (i = 0; i < curState.size; i++) {
         for (j = 0; j < curState.size; j++) {
             if (curState.grid[i][j].opened == "no") {
-                curState.grid[i][j].opened = "yes";
                 if (curState.grid[i][j].bomb == "yes") {
                     curState.x = i * 50;
                     curState.y = j * 50;
@@ -287,6 +288,10 @@ function startGame(curState){
     curState.interval = setInterval(updateTime,1000,curState);
     curState = placeBombs(curState);
     return curState;
+}
+
+function winGame(curState){
+    
 }
 
 function init() {
