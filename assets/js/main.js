@@ -46,7 +46,8 @@ function click(curState) {
                     }
                 }
             } else if (curState.grid[curState.nx][curState.ny].flag == "yes") {
-                fillColour(curState, "#505050");
+                //fillColour(curState, "#505050");
+                blankSquare(curState);
                 curState.grid[curState.nx][curState.ny].flag = "no";
                 curState.flags++;
                 drawFlagCount(curState);
@@ -55,14 +56,15 @@ function click(curState) {
                 }
             }
         } else if (curState.click == "left") {
-            if (curState.grid[curState.nx][curState.ny].flag == "no" || curState.grid[curState.nx][curState.ny].opened == "no") {
-                fillColour(curState, "#808080");
+            if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
                 curState.grid[curState.nx][curState.ny].opened = "yes";
                 if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
+                    fillColour(curState, "rgba(200,0,0,1)");
                     drawBomb(curState);
                     looseGame(curState);
                 } else {
                     //writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
+                    fillColour(curState, "#808080");
                     curState.grid = flood(curState);
                 }
             }
@@ -75,6 +77,42 @@ function click(curState) {
 function fillColour(curState, colour) {
     curState.ctx.fillStyle = colour;
     curState.ctx.fillRect(curState.x, curState.y, 49, 49);
+}
+
+function blankSquare(curState){
+    curState.ctx.fillStyle = "#606060";
+            curState.ctx.fillRect(curState.x, curState.y, 49, 49);
+
+            curState.ctx.beginPath();
+            curState.ctx.moveTo(curState.x+44, curState.y+5);
+            curState.ctx.lineTo(curState.x + 5, curState.y+5);
+            curState.ctx.lineTo(curState.x+ 5, curState.y + 44);
+            curState.ctx.lineTo(curState.x+ 1, curState.y + 48);
+            curState.ctx.lineTo(curState.x+ 1, curState.y + 1);
+            curState.ctx.lineTo(curState.x + 48, curState.y + 1);
+            curState.ctx.lineTo(curState.x+ 44, curState.y + 5);
+            curState.ctx.closePath();
+            curState.ctx.lineWidth = 2;
+            curState.ctx.strokeStyle = "#ffffff";
+            curState.ctx.stroke();
+            curState.ctx.fillStyle = "rgba(200,200,200,1)";
+            curState.ctx.fill();
+
+            curState.ctx.beginPath();
+            
+            curState.ctx.moveTo(curState.x+6, curState.y+44);
+            curState.ctx.lineTo(curState.x+44, curState.y + 44);
+            curState.ctx.lineTo(curState.x+44, curState.y+6);
+            curState.ctx.lineTo(curState.x+48, curState.y+3);
+            curState.ctx.lineTo(curState.x+48, curState.y+48);
+            curState.ctx.lineTo(curState.x+2, curState.y+48);
+            curState.ctx.lineTo(curState.x+6, curState.y+44);
+            curState.ctx.closePath();
+            curState.ctx.lineWidth = 2;
+            curState.ctx.strokeStyle = "#202020";
+            curState.ctx.stroke();
+            curState.ctx.fillStyle = "#202020";
+            curState.ctx.fill();
 }
 
 function fillCanvas(curState) {
@@ -149,11 +187,11 @@ function addBoxes(curState) {
 
 function drawFlag(curState) {
     curState.ctx.beginPath();
-    curState.ctx.moveTo(curState.x + 18, curState.y + 46);
-    curState.ctx.lineTo(curState.x + 24, curState.y + 46);
-    curState.ctx.moveTo(curState.x + 21, curState.y + 46);
-    curState.ctx.lineTo(curState.x + 21, curState.y + 3);
-    curState.ctx.lineTo(curState.x + 42, curState.y + 12);
+    curState.ctx.moveTo(curState.x + 18, curState.y + 41);
+    curState.ctx.lineTo(curState.x + 24, curState.y + 41);
+    curState.ctx.moveTo(curState.x + 21, curState.y + 41);
+    curState.ctx.lineTo(curState.x + 21, curState.y + 10);
+    curState.ctx.lineTo(curState.x + 38, curState.y + 15);
     curState.ctx.lineTo(curState.x + 21, curState.y + 24);
     curState.ctx.closePath();
     curState.ctx.lineWidth = 2;
@@ -164,8 +202,8 @@ function drawFlag(curState) {
 }
 
 function drawBomb(curState) {
-    curState.ctx.fillStyle = "rgba(200,0,0,1)";
-    curState.ctx.arc(curState.x + 24, curState.y + 24, 20, 0, 2 * Math.PI);
+    curState.ctx.fillStyle = "rgba(0,0,0,1)";
+    curState.ctx.arc(curState.x + 25, curState.y + 25, 15, 0, 2 * Math.PI);
     curState.ctx.closePath();
     curState.ctx.fill();
 }
@@ -202,7 +240,7 @@ function endGame(curState) {
                 if (curState.grid[i][j].bomb == "yes") {
                     curState.x = i * 50;
                     curState.y = j * 50;
-                    fillColour(curState, "#808080");
+                    fillColour(curState, "rgba(200,0,0,1)");
                     drawBomb(curState);
                 }
             }
@@ -210,6 +248,7 @@ function endGame(curState) {
                 curState.x = i * 50;
                 curState.y = j * 50;
                 fillColour(curState, "#808080");
+                //drawBomb(curState);
                 drawCross(curState);
             }
         }
