@@ -9,7 +9,6 @@ function State() {
     this.y = 0;
     this.nx = 0;
     this.ny = 0;
-    this.bombsPlaced = null;
     this.ctx = null;
     this.grid = null;
     this.score = 0;
@@ -19,6 +18,7 @@ function State() {
     this.end = false;
     this.interval = null;
     this.started = false;
+    this.openCount = 0;
 }
 
 function click(curState) {
@@ -26,11 +26,11 @@ function click(curState) {
     curState.y -= curState.y % 50;
     curState.nx = curState.x / 50;
     curState.ny = curState.y / 50;
-    if (curState.nx < curState.size && curState.ny < curState.size) {
-        if(!curState.started){
+    if (curState.nx < curState.size && curState.ny < curState.size && !curState.end) {
+        if (!curState.started) {
             curState = startGame(curState);
         }
-        if (curState.click == "right" && !curState.end) {
+        if (curState.click == "right") {
             //fillColour(ctx, x, y, "rgba(200,0,0,1)");
             if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
                 if (curState.flags > 0) {
@@ -38,9 +38,9 @@ function click(curState) {
                     curState.grid[curState.nx][curState.ny].flag = "yes";
                     curState.flags--;
                     drawFlagCount(curState);
-                    if(curState.grid[curState.nx][curState.ny].bomb == "yes"){
+                    if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                         curState.score++;
-                        if(curState.score == curState.size){
+                        if (curState.score == curState.size) {
                             winGame(curState);
                         }
                     }
@@ -50,11 +50,11 @@ function click(curState) {
                 curState.grid[curState.nx][curState.ny].flag = "no";
                 curState.flags++;
                 drawFlagCount(curState);
-                if(curState.grid[curState.nx][curState.ny].bomb == "yes"){
+                if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                     curState.score--;
                 }
             }
-        } else if (curState.click == "left" && !curState.end) {
+        } else if (curState.click == "left") {
             if (curState.grid[curState.nx][curState.ny].flag == "no" || curState.grid[curState.nx][curState.ny].opened == "no") {
                 fillColour(curState, "#808080");
                 curState.grid[curState.nx][curState.ny].opened = "yes";
@@ -78,11 +78,41 @@ function fillColour(curState, colour) {
 }
 
 function fillCanvas(curState) {
-    curState.ctx.fillStyle = "#505050";
-
     for (i = 0; i < 50 * curState.size; i += 50) {
         for (j = 0; j < 50 * curState.size; j += 50) {
+            curState.ctx.fillStyle = "#606060";
             curState.ctx.fillRect(i, j, 49, 49);
+
+            curState.ctx.beginPath();
+            curState.ctx.moveTo(i+44, j+5);
+            curState.ctx.lineTo(i + 5, j+5);
+            curState.ctx.lineTo(i + 5, j + 44);
+            curState.ctx.lineTo(i + 1, j + 48);
+            curState.ctx.lineTo(i + 1, j + 1);
+            curState.ctx.lineTo(i + 48, j + 1);
+            curState.ctx.lineTo(i + 44, j + 5);
+            curState.ctx.closePath();
+            curState.ctx.lineWidth = 2;
+            curState.ctx.strokeStyle = "#ffffff";
+            curState.ctx.stroke();
+            curState.ctx.fillStyle = "rgba(200,200,200,1)";
+            curState.ctx.fill();
+
+            curState.ctx.beginPath();
+            
+            curState.ctx.moveTo(i+6, j+44);
+            curState.ctx.lineTo(i+44, j + 44);
+            curState.ctx.lineTo(i+44, j+6);
+            curState.ctx.lineTo(i+48, j+3);
+            curState.ctx.lineTo(i+48, j+48);
+            curState.ctx.lineTo(i+2, j+48);
+            curState.ctx.lineTo(i+6, j+44);
+            curState.ctx.closePath();
+            curState.ctx.lineWidth = 2;
+            curState.ctx.strokeStyle = "#202020";
+            curState.ctx.stroke();
+            curState.ctx.fillStyle = "#202020";
+            curState.ctx.fill();
         }
     }
 }
@@ -248,8 +278,8 @@ function drawScore(curState) {
     curState.ctx.fillStyle = "#808080";
     curState.ctx.fillRect(166, 500, 166, 99);
     var img = new Image();
-    img.onload = function(){
-        curState.ctx.drawImage(img, 185,525,49,49);
+    img.onload = function () {
+        curState.ctx.drawImage(img, 185, 525, 49, 49);
     }
     img.src = "./assets/images/award.svg"
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
@@ -262,8 +292,8 @@ function drawTimer(curState) {
     curState.ctx.fillStyle = "#808080";
     curState.ctx.fillRect(333, 500, 166, 99);
     var img = new Image();
-    img.onload = function(){
-        curState.ctx.drawImage(img, 345,525,49,49);
+    img.onload = function () {
+        curState.ctx.drawImage(img, 345, 525, 49, 49);
     }
     img.src = "./assets/images/stopwatch.svg"
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
@@ -273,7 +303,7 @@ function drawTimer(curState) {
     return curState;
 }
 
-function updateTime(curState){
+function updateTime(curState) {
     curState.ctx.fillStyle = "#808080";
     curState.ctx.fillRect(393, 500, 106, 99);
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
@@ -282,26 +312,26 @@ function updateTime(curState){
     time++;
 }
 
-function startGame(curState){
+function startGame(curState) {
     curState.started = true;
-    curState.interval = setInterval(updateTime,1000,curState);
+    curState.interval = setInterval(updateTime, 1000, curState);
     curState = placeBombs(curState);
     return curState;
 }
 
-function winGame(curState){
+function winGame(curState) {
     endGame(curState);
-    drawBox(curState,"You Win!!!!", "rgba(0,200,0,0.8)");
+    drawBox(curState, "You Win!!!!", "rgba(0,200,0,0.8)");
 }
 
-function looseGame(curState){
+function looseGame(curState) {
     endGame(curState);
-    drawBox(curState,"You Loose!!", "rgba(200,0,0,0.8)");
+    drawBox(curState, "You Loose!!", "rgba(200,0,0,0.8)");
 }
 
-function drawBox(curState, text, colour){
+function drawBox(curState, text, colour) {
     curState.ctx.fillStyle = colour;
-    curState.ctx.fillRect(100,200, 299, 99);
+    curState.ctx.fillRect(100, 200, 299, 99);
     curState.ctx.fillStyle = "rgba(255,255,255,1)"
     curState.ctx.font = "50px Calibri";
     curState.ctx.fillText(text, 130, 260);
