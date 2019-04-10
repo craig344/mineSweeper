@@ -42,6 +42,7 @@ function click(curState) {
                         curState.score++;
                         if (curState.score == curState.size) {
                             winGame(curState);
+                            drawFlagCount(curState);
                         }
                     }
                 }
@@ -62,6 +63,7 @@ function click(curState) {
                     fillColour(curState, "rgba(200,0,0,1)");
                     drawBomb(curState);
                     looseGame(curState);
+                    drawFlagCount(curState);
                 } else {
                     //writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
                     fillColour(curState, "#808080");
@@ -304,9 +306,9 @@ function flood(curState) {
 
 function drawFlagCount(curState) {
     curState.ctx.fillStyle = "#808080";
-    curState.ctx.fillRect(0, 500, 165, 99);
+    curState.ctx.fillRect(0, 500, 165, 69);
     curState.x = 0;
-    curState.y = 525;
+    curState.y = 510;
     drawFlag(curState);
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
     curState.ctx.font = "50px Calibri";
@@ -315,39 +317,39 @@ function drawFlagCount(curState) {
 
 function drawScore(curState) {
     curState.ctx.fillStyle = "#808080";
-    curState.ctx.fillRect(166, 500, 166, 99);
+    curState.ctx.fillRect(166, 500, 166, 69);
     var img = new Image();
     img.onload = function () {
-        curState.ctx.drawImage(img, 185, 525, 49, 49);
+        curState.ctx.drawImage(img, 185, 515, 40, 40);
     }
     img.src = "./assets/images/award.svg"
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
     curState.ctx.font = "50px Calibri";
-    curState.ctx.fillText(" : " + curState.score, 233, 565);
+    curState.ctx.fillText(": " + curState.score, 233, 550);
 }
 
 var time = 0;
 function drawTimer(curState) {
     curState.ctx.fillStyle = "#808080";
-    curState.ctx.fillRect(333, 500, 166, 99);
+    curState.ctx.fillRect(333, 500, 166, 69);
     var img = new Image();
     img.onload = function () {
-        curState.ctx.drawImage(img, 345, 525, 49, 49);
+        curState.ctx.drawImage(img, 345, 515, 40, 40);
     }
     img.src = "./assets/images/stopwatch.svg"
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
     curState.ctx.font = "40px Calibri";
-    curState.ctx.fillText(":" + time, 393, 565);
+    curState.ctx.fillText(":" + time, 393, 550);
     time++;
     return curState;
 }
 
 function updateTime(curState) {
     curState.ctx.fillStyle = "#808080";
-    curState.ctx.fillRect(393, 500, 106, 99);
+    curState.ctx.fillRect(393, 500, 106, 69);
     curState.ctx.fillStyle = "rgba(0,0,0,1)"
     curState.ctx.font = "40px Calibri";
-    curState.ctx.fillText(":" + time, 393, 565);
+    curState.ctx.fillText(":" + time, 393, 550);
     time++;
 }
 
@@ -360,20 +362,26 @@ function startGame(curState) {
 
 function winGame(curState) {
     endGame(curState);
-    drawBox(curState, "You Win!!!!", "rgba(0,200,0,0.8)");
+    drawBox(curState, "./assets/images/cool.svg", "rgba(0,200,0,0.2)");
 }
 
 function looseGame(curState) {
     endGame(curState);
-    drawBox(curState, "You Loose!!", "rgba(200,0,0,0.8)");
+    drawBox(curState, "./assets/images/crying.svg", "rgba(200,0,0,0.2)");
 }
 
-function drawBox(curState, text, colour) {
+function drawBox(curState, src, colour) {
     curState.ctx.fillStyle = colour;
-    curState.ctx.fillRect(100, 200, 299, 99);
-    curState.ctx.fillStyle = "rgba(255,255,255,1)"
-    curState.ctx.font = "50px Calibri";
-    curState.ctx.fillText(text, 130, 260);
+    curState.ctx.fillRect(200, 200, 99, 99);
+    //curState.ctx.fillStyle = "rgba(255,255,255,1)"
+    //curState.ctx.font = "50px Calibri";
+    //curState.ctx.fillText(text, 130, 260);
+    var img = new Image();
+    img.onload = function () {
+        curState.ctx.globalAlpha = 0.8;
+        curState.ctx.drawImage(img, 200, 200, 99, 99);
+    }
+    img.src = src;
 }
 
 function init() {
