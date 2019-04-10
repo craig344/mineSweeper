@@ -18,8 +18,9 @@ function State() {
     this.end = false;
     this.interval = null;
     this.started = false;
-    this.openCount = 0;
 }
+
+var openCount = 0;
 
 function click(curState) {
     curState.x -= curState.x % 50;
@@ -37,13 +38,10 @@ function click(curState) {
                     drawFlag(curState);
                     curState.grid[curState.nx][curState.ny].flag = "yes";
                     curState.flags--;
+                    openCount++;
                     drawFlagCount(curState);
                     if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                         curState.score++;
-                        if (curState.score == curState.size) {
-                            winGame(curState);
-                            drawFlagCount(curState);
-                        }
                     }
                 }
             } else if (curState.grid[curState.nx][curState.ny].flag == "yes") {
@@ -51,6 +49,7 @@ function click(curState) {
                 blankSquare(curState);
                 curState.grid[curState.nx][curState.ny].flag = "no";
                 curState.flags++;
+                openCount--;
                 drawFlagCount(curState);
                 if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                     curState.score--;
@@ -58,7 +57,8 @@ function click(curState) {
             }
         } else if (curState.click == "left") {
             if (curState.grid[curState.nx][curState.ny].flag == "no" && curState.grid[curState.nx][curState.ny].opened == "no") {
-                curState.grid[curState.nx][curState.ny].opened = "yes";
+               // curState.grid[curState.nx][curState.ny].opened = "yes";
+                //curState.openCount++;
                 if (curState.grid[curState.nx][curState.ny].bomb == "yes") {
                     fillColour(curState, "rgba(200,0,0,1)");
                     drawBomb(curState);
@@ -66,8 +66,12 @@ function click(curState) {
                     drawFlagCount(curState);
                 } else {
                     //writeNumber(countAdjacentBombs(nx, ny, grid), x, y, ctx);
-                    fillColour(curState, "#808080");
+                   // fillColour(curState, "#808080");
                     curState.grid = flood(curState);
+                    if (openCount == curState.size*curState.size) {
+                            winGame(curState);
+                            drawFlagCount(curState);
+                    }
                 }
             }
         }
@@ -279,6 +283,7 @@ function flood(curState) {
 
     fillColour(curState, "#808080");
     curState.grid[curState.nx][curState.ny].opened = "yes";
+    openCount++;
     if (countAdjacentBombs(curState) == null) {
         for (m = curState.nx - 1; m <= curState.nx + 1; m++) {
             for (n = curState.ny - 1; n <= curState.ny + 1; n++) {
