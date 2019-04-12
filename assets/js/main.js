@@ -208,6 +208,7 @@ function drawFlag(curState) {
 }
 
 function drawBomb(curState) {
+    //curState.ctx.clearRect(curState.x, curState.y, 49, 49);
     curState.ctx.fillStyle = "rgba(0,0,0,1)";
     curState.ctx.arc(curState.x + 25, curState.y + 25, 15, 0, 2 * Math.PI);
     curState.ctx.closePath();
@@ -253,8 +254,9 @@ function endGame(curState) {
             if (curState.grid[i][j].flag == "yes" && curState.grid[i][j].bomb == "yes") {
                 curState.x = i * 50;
                 curState.y = j * 50;
-                fillColour(curState, "#808080");
+                //fillColour(curState, "#808080");
                 //drawBomb(curState);
+                blankSquare(curState);
                 drawCross(curState);
             }
         }
@@ -266,10 +268,10 @@ function endGame(curState) {
 
 function drawCross(curState) {
     curState.ctx.beginPath();
-    curState.ctx.moveTo(curState.x + 1, curState.y + 1);
-    curState.ctx.lineTo(curState.x + 48, curState.y + 48);
-    curState.ctx.moveTo(curState.x + 48, curState.y + 1);
-    curState.ctx.lineTo(curState.x + 1, curState.y + 48);
+    curState.ctx.moveTo(curState.x + 7, curState.y + 7);
+    curState.ctx.lineTo(curState.x + 42, curState.y + 42);
+    curState.ctx.moveTo(curState.x + 42, curState.y + 7);
+    curState.ctx.lineTo(curState.x + 7, curState.y + 42);
     curState.ctx.closePath();
     curState.ctx.lineWidth = 2;
     curState.ctx.strokeStyle = "rgba(200,0,0,1)";
