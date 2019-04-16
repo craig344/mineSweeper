@@ -210,6 +210,7 @@ function drawFlag(curState) {
 function drawBomb(curState) {
     //curState.ctx.clearRect(curState.x, curState.y, 49, 49);
     curState.ctx.fillStyle = "rgba(0,0,0,1)";
+    curState.ctx.moveTo(curState.x + 25, curState.y + 25);
     curState.ctx.arc(curState.x + 25, curState.y + 25, 15, 0, 2 * Math.PI);
     curState.ctx.closePath();
     curState.ctx.fill();
